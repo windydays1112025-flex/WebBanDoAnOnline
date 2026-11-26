@@ -1,0 +1,85 @@
+﻿@model List<WebBanDoAnOnline.Models.ChiTietDonHang>
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+}
+
+<h2>Chi tiết đơn hàng</h2>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Tên món</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+            <th>Đánh giá</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            decimal thanhTien =
+                item.DonGia * item.SoLuong.Value;
+
+            <tr>
+
+                <td>
+                    @item.SanPham.TenSP
+                </td>
+
+                <td>
+                    @item.DonGia.ToString("N0") VNĐ
+                </td>
+
+                <td>
+                    @item.SoLuong
+                </td>
+
+                <td>
+                    @thanhTien.ToString("N0") VNĐ
+                </td>
+
+                <td>
+
+                    @if (item.DonHang.TrangThai == "Đã nhận hàng")
+                    {
+                        <a href="@Url.Action(
+                            "Create",
+                            "DanhGia",
+                            new
+                            {
+                                maSP = item.MaSP,
+                                maDH = item.MaDH
+                            })"
+                           class="btn btn-warning btn-sm">
+
+                            Đánh giá
+
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Chưa thể đánh giá
+                        </span>
+                    }
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<a href="@Url.Action("DonHangCuaToi","TaiKhoan")"
+   class="btn btn-secondary">
+
+    Quay lại
+
+</a>

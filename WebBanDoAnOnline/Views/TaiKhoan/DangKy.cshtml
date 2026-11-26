@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Đăng ký";
+}
+
+<h2>Đăng ký tài khoản</h2>
+
+<form method="post">
+
+    <div class="mb-3">
+        <label>Họ tên</label>
+        <input type="text" name="HoTen" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Số điện thoại</label>
+        <input type="text" name="SoDienThoai" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="Email" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Tên tài khoản</label>
+        <input type="text" name="TenTK" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Mật khẩu</label>
+        <input type="password" name="MatKhau" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        Đăng ký
+    </button>
+
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <p style="color:red">@ViewBag.Message</p>
+}
+

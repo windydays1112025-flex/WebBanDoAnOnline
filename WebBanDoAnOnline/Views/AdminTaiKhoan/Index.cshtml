@@ -1,0 +1,234 @@
+﻿@model List<WebBanDoAnOnline.Models.TaiKhoan>
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+@{
+    var currentUser =
+    Session["TaiKhoan"] as WebBanDoAnOnline.Models.TaiKhoan;
+}
+
+<h2>Quản lý tài khoản</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (currentUser != null)
+{<p>
+
+        @* Admin được thêm Quản lý *@
+        @if (currentUser.TenTK == "admin")
+        {
+            @Html.ActionLink(
+                "Thêm quản lý",
+                "CreateQuanLy",
+                null,
+                new { @class = "btn btn-success" }
+            )
+
+            @Html.Raw(" ")
+        }
+
+        @* Quản lý được thêm Nhân viên *@
+        @if (currentUser.VaiTro == "Quản lý")
+        {
+            @Html.ActionLink(
+                "Thêm nhân viên",
+                "CreateNhanVien",
+                null,
+                new { @class = "btn btn-primary" }
+            )
+        }
+
+    </p>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            @using (Html.BeginForm("Index", "AdminTaiKhoan", FormMethod.Get))
+            {
+                <div class="input-group">
+                    <input type="text"
+                           name="keyword"
+                           value="@ViewBag.Keyword"
+                           class="form-control"
+                           placeholder="Tìm theo họ tên, email, tài khoản..." />
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        <i class="fa fa-search"></i> Tìm kiếm
+                    </button>
+
+                    <a href="@Url.Action("Index", "AdminTaiKhoan")"
+                       class="btn btn-secondary">
+                        Làm mới
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    <p>
+        Tìm thấy <strong>@Model.Count</strong> tài khoản
+    </p>
+
+}
+
+<table class="table table-bordered table-striped">
+
+    <tr>
+        <th>Họ tên</th>
+        <th>Email</th>
+        <th>Tên tài khoản</th>
+        <th>Vai trò</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            <td>@item.HoTen</td>
+            <td>@item.Email</td>
+            <td>@item.TenTK</td>
+            <td>@item.VaiTro</td>
+
+            <td>
+                @if (item.isDelete == 1)
+                {
+                    <span style="color:red;font-weight:bold">
+                        Bị khóa
+                    </span>
+                }
+                else
+                {
+                    <span style="color:green;font-weight:bold">
+                        Hoạt động
+                    </span>
+                }
+            </td>
+
+            <td>
+
+                @if (currentUser != null &&
+                     currentUser.MaTK != item.MaTK)
+                {
+                    @* ADMIN GỐC *@
+                    if (currentUser.TenTK == "admin")
+                    {
+                        if (item.isDelete == 1)
+                        {
+                            @Html.ActionLink(
+                                "Unban",
+                                "Unban",
+                                new { id = item.MaTK },
+                                new { @class = "btn btn-success btn-sm" }
+                            )
+                        }
+                        else
+                        {
+                            @Html.ActionLink(
+                                "Ban",
+                                "Ban",
+                                new { id = item.MaTK },
+                                new { @class = "btn btn-warning btn-sm" }
+                            )
+                        }
+
+                        @Html.Raw(" ")
+
+                        @Html.ActionLink(
+                            "Xóa",
+                            "Delete",
+                            new { id = item.MaTK },
+                            new
+                            {
+                                @class = "btn btn-danger btn-sm",
+                                onclick = "return confirm('Xóa vĩnh viễn tài khoản này?');"
+                            }
+                        )
+                    }
+
+                    @* QUẢN LÝ THƯỜNG *@
+                    else if (currentUser.VaiTro == "Quản lý" &&
+                             item.VaiTro != "Quản lý")
+                    {
+                        if (item.isDelete == 1)
+                        {
+                            @Html.ActionLink(
+                                "Unban",
+                                "Unban",
+                                new { id = item.MaTK },
+                                new { @class = "btn btn-success btn-sm" }
+                            )
+                        }
+                        else
+                        {
+                            @Html.ActionLink(
+                                "Ban",
+                                "Ban",
+                                new { id = item.MaTK },
+                                new { @class = "btn btn-warning btn-sm" }
+                            )
+                        }
+
+                        @Html.Raw(" ")
+
+                        @Html.ActionLink(
+                            "Xóa",
+                            "Delete",
+                            new { id = item.MaTK },
+                            new
+                            {
+                                @class = "btn btn-danger btn-sm",
+                                onclick = "return confirm('Xóa tài khoản này?');"
+                            }
+                        )
+                    }
+
+                    @* NHÂN VIÊN *@
+                    else if (currentUser.VaiTro == "Nhân viên" &&
+                             item.VaiTro == "Khách hàng")
+                    {
+                        if (item.isDelete == 1)
+                        {
+                            @Html.ActionLink(
+                                "Unban",
+                                "Unban",
+                                new { id = item.MaTK },
+                                new { @class = "btn btn-success btn-sm" }
+                            )
+                        }
+                        else
+                        {
+                            @Html.ActionLink(
+                                "Ban",
+                                "Ban",
+                                new { id = item.MaTK },
+                                new { @class = "btn btn-warning btn-sm" }
+                            )
+                        }
+
+                        @Html.Raw(" ")
+
+                        @Html.ActionLink(
+                            "Xóa",
+                            "Delete",
+                            new { id = item.MaTK },
+                            new
+                            {
+                                @class = "btn btn-danger btn-sm",
+                                onclick = "return confirm('Xóa tài khoản này?');"
+                            }
+                        )
+                    }
+                }
+
+            </td>
+
+        </tr>
+    }
+
+</table>

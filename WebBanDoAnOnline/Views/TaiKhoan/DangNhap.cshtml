@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "Đăng nhập";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-1 text-center">Đăng nhập</h4>
+                    <p class="text-muted text-center small mb-4">
+                        Chào mừng bạn quay lại Ngon Food!
+                    </p>
+
+                    @if (ViewBag.ThongBao != null)
+                    {
+                        <div class="alert alert-danger py-2 small">
+                            <i class="fa-solid fa-circle-exclamation me-1"></i>
+                            @ViewBag.ThongBao
+                        </div>
+                    }
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success py-2 small">
+                            <i class="fa-solid fa-circle-check me-1"></i>
+                            @TempData["Success"]
+                        </div>
+                    }
+
+                    <form method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Tên tài khoản</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fa-solid fa-user text-muted"></i>
+                                </span>
+                                <input type="text"
+                                       name="TenTK"
+                                       class="form-control border-start-0"
+                                       placeholder="Nhập tên tài khoản"
+                                       required />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label small fw-bold mb-0">Mật khẩu</label>
+                                <a href="@Url.Action("QuenMatKhau","TaiKhoan")"
+                                   class="small text-warning text-decoration-none">
+                                    Quên mật khẩu?
+                                </a>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fa-solid fa-lock text-muted"></i>
+                                </span>
+                                <input type="password"
+                                       id="inputMatKhau"
+                                       name="MatKhau"
+                                       class="form-control border-start-0 border-end-0"
+                                       placeholder="Nhập mật khẩu"
+                                       required />
+                                <span class="input-group-text bg-light border-start-0"
+                                      style="cursor:pointer"
+                                      onclick="toggleMatKhau()">
+                                    <i class="fa-regular fa-eye text-muted" id="eyeIcon"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 fw-bold mt-2">
+                            <i class="fa-solid fa-right-to-bracket me-1"></i> Đăng nhập
+                        </button>
+
+                    </form>
+
+                    <hr class="my-3" />
+
+                    <p class="text-center small mb-0">
+                        Chưa có tài khoản?
+                        <a href="@Url.Action("DangKy", "TaiKhoan")"
+                           class="text-warning fw-bold text-decoration-none">
+                            Đăng ký ngay
+                        </a>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleMatKhau() {
+            var input = document.getElementById('inputMatKhau');
+            var icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+}

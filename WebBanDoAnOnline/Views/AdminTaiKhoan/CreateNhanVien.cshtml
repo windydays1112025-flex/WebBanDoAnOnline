@@ -1,0 +1,95 @@
+﻿@model WebBanDoAnOnline.Models.TaiKhoan
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+    ViewBag.Title = "Thêm nhân viên";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">
+        <i class="fa-solid fa-user-plus text-warning me-2"></i>
+        Thêm nhân viên mới
+    </h4>
+    @Html.ActionLink("Quay lại", "Index", null,
+        new { @class = "btn btn-outline-secondary btn-sm" })
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger py-2 small">
+                        <i class="fa-solid fa-circle-exclamation me-1"></i>
+                        @ViewBag.Error
+                    </div>
+                }
+
+                @using (Html.BeginForm())
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Họ tên</label>
+                        @Html.TextBoxFor(x => x.HoTen, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Nhập họ và tên"
+                        })
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Số điện thoại</label>
+                            @Html.TextBoxFor(x => x.SoDienThoai, new
+                            {
+                                @class = "form-control",
+                                placeholder = "0xxxxxxxxx"
+                            })
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Email</label>
+                            @Html.TextBoxFor(x => x.Email, new
+                            {
+                                @class = "form-control",
+                                placeholder = "example@email.com",
+                                type = "email"
+                            })
+                        </div>
+                    </div>
+
+                    <hr class="my-3" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Tên tài khoản</label>
+                        @Html.TextBoxFor(x => x.TenTK, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Dùng để đăng nhập"
+                        })
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small">Mật khẩu</label>
+                        @Html.PasswordFor(x => x.MatKhau, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Tối thiểu 6 ký tự"
+                        })
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning fw-bold px-4">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Thêm nhân viên
+                        </button>
+                        @Html.ActionLink("Hủy", "Index", null,
+                            new { @class = "btn btn-light px-4" })
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,62 @@
+﻿@model WebBanDoAnOnline.Models.SanPham
+
+<h2>Xóa sản phẩm</h2>
+
+<div class="alert alert-warning">
+    ⚠ Bạn có chắc chắn muốn xóa sản phẩm này không?
+</div>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Ảnh</th>
+        <td>
+            <img src="@Url.Content(Model.Anh ?? "~/img/no-image.png")"
+                 width="120"
+                 style="border-radius:8px;" />
+        </td>
+    </tr>
+
+    <tr>
+        <th>Tên sản phẩm</th>
+        <td>@Model.TenSP</td>
+    </tr>
+
+    <tr>
+        <th>Giá</th>
+        <td>@String.Format("{0:N0}", Model.Gia) VNĐ</td>
+    </tr>
+
+    <tr>
+        <th>Mô tả</th>
+        <td>@Model.MoTa</td>
+    </tr>
+
+    <tr>
+        <th>Trạng thái</th>
+        <td>@Model.TrangThai</td>
+    </tr>
+
+</table>
+
+<br />
+
+@using (Html.BeginForm("Delete", "AdminSanPham", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(x => x.MaSP)
+
+    <button type="submit" class="btn btn-danger">
+        🗑 Xóa
+    </button>
+
+    @Html.ActionLink(
+        "Hủy",
+        "Index",
+        "AdminSanPham",
+        null,
+        new { @class = "btn btn-secondary" }
+    )
+}
+

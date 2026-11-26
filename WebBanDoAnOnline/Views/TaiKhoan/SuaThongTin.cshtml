@@ -1,0 +1,48 @@
+﻿@model WebBanDoAnOnline.Models.TaiKhoan
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-warning">
+            <h4>Chỉnh sửa thông tin</h4>
+        </div>
+
+        <div class="card-body">
+
+            @using (Html.BeginForm())
+            {
+                <div class="mb-3">
+                    <label>Họ tên</label>
+                    <input type="text"
+                           name="HoTen"
+                           value="@Model.HoTen"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email"
+                           name="Email"
+                           value="@Model.Email"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Số điện thoại</label>
+                    <input type="text"
+                           name="SoDienThoai"
+                           value="@Model.SoDienThoai"
+                           class="form-control" />
+                </div>
+
+                <button class="btn btn-warning">
+                    Lưu thay đổi
+                </button>
+            }
+
+        </div>
+
+    </div>
+
+</div>

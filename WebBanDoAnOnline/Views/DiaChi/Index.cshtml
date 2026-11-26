@@ -1,0 +1,66 @@
+﻿@model List<WebBanDoAnOnline.Models.DiaChi>
+
+@{
+    ViewBag.Title = "Địa chỉ giao hàng";
+}
+
+<h2>Địa chỉ giao hàng</h2>
+
+<p>
+    <a href="@Url.Action("Create")"
+       class="btn btn-success">
+        Thêm địa chỉ mới
+    </a>
+</p>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Người nhận</th>
+            <th>SĐT</th>
+            <th>Địa chỉ</th>
+            <th>Mặc định</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.TenNguoiNhan</td>
+
+                <td>@item.SDTNhan</td>
+
+                <td>@item.DiaChiCuThe</td>
+
+                <td>
+                    @(item.MacDinh == true ? "✓" : "")
+                </td>
+
+                <td>
+
+                    <a href="@Url.Action("Sua",
+                            new { id = item.MaDiaChi })"
+                       class="btn btn-warning btn-sm">
+                        Sửa
+                    </a>
+
+                    <a href="@Url.Action("Xoa",
+                            new { id = item.MaDiaChi })"
+                       class="btn btn-danger btn-sm">
+                        Xóa
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+

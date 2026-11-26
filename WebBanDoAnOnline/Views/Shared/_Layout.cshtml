@@ -1,0 +1,581 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Ngon Food</title>
+
+    <!-- Link Bootstrap CSS (sử dụng CDN cho đơn giản) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Link tới Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <!-- Dòng này sẽ render file Site.css của bạn từ BundleConfig -->
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    @* Determine current route to set active menu item *@
+    @{
+        var currentController = (ViewContext.RouteData.Values["controller"] as string) ?? "";
+        var currentAction = (ViewContext.RouteData.Values["action"] as string) ?? "";
+    }
+
+    <main class="page-content">
+        <header class="main-header">
+            <!-- navbar và navbar-expand-lg là class của Bootstrap để tạo thanh điều hướng responsive -->
+            <nav class="navbar navbar-expand-lg">
+                <!-- container giới hạn chiều rộng và căn giữa nội dung -->
+                <div class="container">
+                    <!-- 1. Logo (navbar-brand là class của Bootstrap dành cho logo/tên thương hiệu) -->
+                    @Html.ActionLink("Ngon Food", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+                    <!-- 2. Menu chính (ở giữa) -->
+                    <!-- justify-content-center là class của Bootstrap để đẩy nội dung vào giữa -->
+                    <div class="collapse navbar-collapse justify-content-center">
+                        <!-- navbar-nav là class Bootstrap cho danh sách menu -->
+                        <ul class="navbar-nav">
+                            <!-- nav-item và nav-link là các class tiêu chuẩn cho từng mục menu -->
+                            <li class="nav-item">
+                                @Html.ActionLink(
+                                                                                 "Trang chủ",
+                                                                                 "Index",
+                                                                                 "Home",
+                                                                                 null,
+                                                                                 new { @class = "nav-link" + ((currentController == "Home" && currentAction == "Index") ? " active" : "") }
+                                                                             )
+                            </li>
+                            <li class="nav-item">
+                                @Html.ActionLink(
+                                                                                 "Thực đơn",
+                                                                                 "Index",
+                                                                                 "Menu",
+                                                                                 null,
+                                                                                 new { @class = "nav-link" + ((currentController == "Menu" && currentAction == "Index") ? " active" : "") }
+                                                                             )
+                            </li>
+                            <li class="nav-item">
+                                @Html.ActionLink(
+                                                                                 "Giới thiệu",
+                                                                                 "About",
+                                                                                 "Home",
+                                                                                 null,
+                                                                                 new { @class = "nav-link" + ((currentController == "Home" && currentAction == "About") ? " active" : "") }
+                                                                             )
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 3. Các chức năng bên phải -->
+                    <!-- d-flex và align-items-center là các class flexbox của Bootstrap để sắp xếp các item -->
+                    <div class="d-flex align-items-center header-actions">
+                        <!-- Ô tìm kiếm -->
+                        <div class="position-relative me-3" id="searchWrapper">
+                            <div class="input-group">
+                                <input type="text"
+                                       id="searchInput"
+                                       class="form-control"
+                                       placeholder="Tìm kiếm món ăn"
+                                       autocomplete="off" />
+                                <span class="input-group-text">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </span>
+                            </div>
+
+                            <div id="searchDropdown"
+                                 class="d-none position-absolute bg-white border rounded-3 shadow w-100"
+                                 style="top: calc(100% + 6px); min-width: 320px; z-index: 9999;">
+                                <div id="searchResults"></div>
+                                <div id="searchFooter" class="d-none border-top">
+                                    <a id="searchViewAll" href="#"
+                                       class="d-block text-center text-warning py-2 text-decoration-none fw-bold small">
+                                        Xem tất cả kết quả <i class="fa-solid fa-arrow-right fa-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Icons -->
+                        @if (Session["TaiKhoan"] != null)
+                        {
+                            <div class="position-relative me-2" id="thongBaoWrapper">
+                                <button class="btn btn-light position-relative" id="btnThongBao">
+                                    <i class="fa-regular fa-bell"></i>
+                                    <span id="badgeThongBao"
+                                          class="position-absolute top-0 start-100 translate-middle
+                         badge rounded-pill bg-danger d-none"
+                                          style="font-size:10px">
+                                        0
+                                    </span>
+                                </button>
+
+                                <div id="thongBaoDropdown"
+                                     class="d-none position-absolute bg-white border rounded-3 shadow"
+                                     style="top: calc(100% + 6px); right: 0; width: 340px; z-index: 9999;">
+
+                                    <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                                        <strong class="small">Thông báo</strong>
+                                        <a href="#" id="btnDocTatCa"
+                                           class="text-decoration-none small text-warning">
+                                            Đánh dấu tất cả đã đọc
+                                        </a>
+                                    </div>
+
+                                    <div id="thongBaoList"
+                                         style="max-height:360px; overflow-y:auto;"></div>
+
+                                    <div class="text-center py-2 border-top">
+                                        <small class="text-muted">Chỉ hiển thị 10 thông báo gần nhất</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="#" class="header-icon me-2">
+                                <i class="fa-regular fa-bell"></i>
+                            </a>
+                        }
+                        @if (Session["TaiKhoan"] != null)
+                        {
+                            var tk = (WebBanDoAnOnline.Models.TaiKhoan)Session["TaiKhoan"];
+
+                            <div class="d-flex align-items-center gap-2">
+
+                                @* Nút giỏ hàng *@
+                                <a href="@Url.Action("Index","GioHang")"
+                                   class="btn btn-sm btn-warning">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                </a>
+
+                                @* Dropdown avatar *@
+                                <div class="position-relative" id="avatarWrapper">
+                                    <img src="@Url.Content("~/img/avatar.png")"
+                                         id="btnAvatar"
+                                         class="user-avatar"
+                                         alt="Avatar"
+                                         style="cursor:pointer; width:36px; height:36px; border-radius:50%; object-fit:cover;" />
+
+                                    <div id="avatarDropdown"
+                                         class="d-none position-absolute bg-white border rounded-3 shadow"
+                                         style="top: calc(100% + 8px); right: 0; min-width: 200px; z-index: 9999;">
+
+                                        @* Header dropdown *@
+                                        <div class="px-3 py-2 border-bottom rounded-top"
+                                             style="background-color: #f97316;">
+                                            <div class="fw-bold small text-white">@tk.HoTen</div>
+                                            <div class="text-white" style="font-size:11px; opacity:0.85">@tk.Email</div>
+                                        </div>
+
+                                        <a href="@Url.Action("ThongTinCaNhan","TaiKhoan")"
+                                           class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none text-dark border-bottom"
+                                           onmouseover="this.style.background='#fff8f0'"
+                                           onmouseout="this.style.background=''">
+                                            <i class="fa-solid fa-user text-warning"></i>
+                                            <span class="small">Thông tin cá nhân</span>
+                                        </a>
+                                        @* Menu items *@
+                                        <a href="@Url.Action("DonHangCuaToi","TaiKhoan")"
+                                           class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none text-dark border-bottom"
+                                           onmouseover="this.style.background='#fff8f0'"
+                                           onmouseout="this.style.background=''">
+                                            <i class="fa-solid fa-receipt text-warning"></i>
+                                            <span class="small">Đơn hàng của tôi</span>
+                                        </a>
+
+                                        <a href="@Url.Action("Index","DiaChi")"
+                                           class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none text-dark border-bottom"
+                                           onmouseover="this.style.background='#fff8f0'"
+                                           onmouseout="this.style.background=''">
+                                            <i class="fa-solid fa-location-dot text-warning"></i>
+                                            <span class="small">Địa chỉ giao hàng</span>
+                                        </a>
+
+                                        <a href="@Url.Action("DangXuat","TaiKhoan")"
+                                           class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none text-danger rounded-bottom"
+                                           onmouseover="this.style.background='#fff0f0'"
+                                           onmouseout="this.style.background=''">
+                                            <i class="fa-solid fa-right-from-bracket"></i>
+                                            <span class="small">Đăng xuất</span>
+                                        </a>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("DangNhap","TaiKhoan")"
+                               class="btn btn-primary">
+                                Đăng nhập
+                            </a>
+                        }
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-logo">
+                    <a href="#">
+                        <span class="logo-bold fst-italic">Ngon</span>
+                        <span class="logo-regular">Food</span>
+                    </a>
+                </div>
+
+                <nav class="footer-nav">
+                    <ul>
+                        <li><a href="#">Về chúng tôi</a></li>
+                        <li><a href="#">Giải đáp thắc mắc</a></li>
+                        <li><a href="#">Điều khoản & Điều kiện</a></li>
+                    </ul>
+                </nav>
+
+                <div class="footer-contact">
+                    <p>SĐT Liên hệ: 0971123456</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    <!-- Link Bootstrap JS (sử dụng CDN) -->
+    <script>
+        (function ($) {
+            function setupSlidingUnderline() {
+                var $nav = $('.navbar .navbar-nav');
+                if (!$nav.length) return;
+
+                var $underline = $nav.find('.nav-underline');
+                if (!$underline.length) {
+                    $underline = $('<span class="nav-underline" aria-hidden="true"></span>').appendTo($nav);
+                }
+
+                var $activeLink = $nav.find('.nav-link.active').first();
+                var animationDuration = 360;
+
+                function getTargetTransform($el) {
+                    if (!$el || !$el.length) return 'scaleX(0)';
+                    var left = $el.position().left;
+                    var width = $el.outerWidth();
+                    return 'translate3d(' + left + 'px, 0, 0) scaleX(' + width + ')';
+                }
+
+                function moveTo($el, withAnimation) {
+                    // Tạm thời tắt hiệu ứng nếu không cần
+                    $underline.css('transition', withAnimation ? '' : 'none');
+                    // Áp dụng vị trí mới
+                    $underline[0].style.transform = getTargetTransform($el);
+
+                    // Bắt buộc trình duyệt phải "vẽ" lại ở trạng thái không có transition
+                    $underline[0].getBoundingClientRect();
+
+                    // Bật lại hiệu ứng cho các lần tương tác sau
+                    $underline.css('transition', '');
+                }
+
+                // 1. Khi trang tải xong, đặt gạch chân vào vị trí mà KHÔNG có hiệu ứng
+                if ($activeLink.length) {
+                    moveTo($activeLink, false);
+                }
+
+                // 2. Xử lý khi nhấp vào một mục menu (CÓ hiệu ứng)
+                $nav.on('click', '.nav-link', function (e) {
+                    var $clickedLink = $(this);
+                    var targetUrl = $clickedLink.attr('href');
+
+                    if ($clickedLink.is($activeLink)) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    moveTo($clickedLink, true); // Di chuyển với hiệu ứng
+
+                    setTimeout(function () {
+                        window.location.href = targetUrl;
+                    }, animationDuration);
+                });
+
+                // 3. Điều chỉnh lại vị trí khi thay đổi kích thước cửa sổ (KHÔNG có hiệu ứng)
+                var resizeTimer;
+                $(window).on('resize', function () {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(function () {
+                        var $currentActive = $nav.find('.nav-link.active').first();
+                        if ($currentActive.length) {
+                            moveTo($currentActive, false);
+                        }
+                    }, 80);
+                });
+            }
+
+            $(document).ready(setupSlidingUnderline);
+
+        })(jQuery);
+    </script>
+
+    <script>
+        (function ($) {
+            var searchTimer = null;
+            var $input = $('#searchInput');
+            var $dropdown = $('#searchDropdown');
+            var $results = $('#searchResults');
+            var $footer = $('#searchFooter');
+            var $viewAll = $('#searchViewAll');
+
+            function formatPrice(gia) {
+                return Number(gia).toLocaleString('vi-VN') + 'đ';
+            }
+
+            function showDropdown(items, keyword) {
+                $results.empty();
+
+                if (items.length === 0) {
+                    $results.html(
+                        '<div class="text-center text-muted py-3 small">' +
+                        '<i class="fa-solid fa-magnifying-glass me-1"></i>' +
+                        'Không tìm thấy món ăn nào' +
+                        '</div>'
+                    );
+                    $footer.addClass('d-none');
+                } else {
+                    $.each(items, function (i, sp) {
+                        var borderClass = (i < items.length - 1) ? ' border-bottom' : '';
+                        var html =
+                            '<a href="/Menu/ChiTiet/' + sp.MaSP + '"' +
+                            ' class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none text-dark' + borderClass + '"' +
+                            ' onmouseover="this.style.background=\'#fff8f0\'"' +
+                            ' onmouseout="this.style.background=\'\'">' +
+                            '<img src="' + sp.Anh + '"' +
+                            ' onerror="this.src=\'/Content/images/no-image.png\'"' +
+                            ' style="width:46px;height:46px;object-fit:cover;border-radius:8px;flex-shrink:0">' +
+                            '<div class="flex-grow-1 overflow-hidden">' +
+                            '<div class="fw-bold text-truncate small">' + sp.TenSP + '</div>' +
+                            '<div class="text-muted" style="font-size:11px">' + sp.TenDM + '</div>' +
+                            '</div>' +
+                            '<div class="text-warning fw-bold small text-nowrap">' + formatPrice(sp.Gia) + '</div>' +
+                            '</a>';
+                        $results.append(html);
+                    });
+
+                    $viewAll.attr('href', '/Menu/KetQuaTimKiem?q=' + encodeURIComponent(keyword));
+                    $footer.removeClass('d-none');
+                }
+
+                $dropdown.removeClass('d-none');
+            }
+
+            function hideDropdown() {
+                $dropdown.addClass('d-none');
+            }
+
+            $input.on('input', function () {
+                var keyword = $(this).val().trim();
+                clearTimeout(searchTimer);
+
+                if (keyword.length < 1) {
+                    hideDropdown();
+                    return;
+                }
+
+                $results.html(
+                    '<div class="text-center text-muted py-3 small">' +
+                    '<i class="fa-solid fa-spinner fa-spin me-1"></i>Đang tìm...' +
+                    '</div>'
+                );
+                $dropdown.removeClass('d-none');
+
+                searchTimer = setTimeout(function () {
+                    $.getJSON('/Menu/TimKiem', { q: keyword }, function (data) {
+                        showDropdown(data, keyword);
+                    }).fail(function () {
+                        $results.html(
+                            '<div class="text-center text-danger py-3 small">Có lỗi xảy ra, thử lại sau</div>'
+                        );
+                    });
+                }, 300);
+            });
+
+            $input.on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    var keyword = $(this).val().trim();
+                    if (keyword) {
+                        window.location.href = '/Menu/KetQuaTimKiem?q=' + encodeURIComponent(keyword);
+                    }
+                }
+            });
+
+            $(document).on('click', function (e) {
+                if (!$('#searchWrapper').is(e.target) &&
+                    $('#searchWrapper').has(e.target).length === 0) {
+                    hideDropdown();
+                }
+            });
+
+            $input.on('focus', function () {
+                if ($results.children().length > 0) {
+                    $dropdown.removeClass('d-none');
+                }
+            });
+
+        })(jQuery);
+    </script>
+    <script>
+        (function ($) {
+            if (!$('#btnThongBao').length) return;
+
+            function loadSoThongBao() {
+                $.getJSON('/ThongBao/SoThongBaoChuaDoc', function (data) {
+                    var $badge = $('#badgeThongBao');
+                    if (data.count > 0) {
+                        $badge.text(data.count).removeClass('d-none');
+                    } else {
+                        $badge.addClass('d-none');
+                    }
+                });
+            }
+
+            function loadDanhSach() {
+                var $list = $('#thongBaoList');
+                $list.html(
+                    '<div class="text-center text-muted py-3 small">' +
+                    '<i class="fa-solid fa-spinner fa-spin me-1"></i>Đang tải...' +
+                    '</div>'
+                );
+
+                $.getJSON('/ThongBao/DanhSach', function (data) {
+                    $list.empty();
+
+                    if (data.length === 0) {
+                        $list.html(
+                            '<div class="text-center text-muted py-4 small">' +
+                            '<i class="fa-regular fa-bell-slash fa-2x mb-2 d-block"></i>' +
+                            'Chưa có thông báo nào' +
+                            '</div>'
+                        );
+                        return;
+                    }
+
+                    $.each(data, function (i, tb) {
+                        var bgClass = tb.IsRead ? '' : 'bg-light';
+                        var badgeHtml = !tb.IsRead
+                            ? '<span class="badge bg-warning text-dark ms-1" style="font-size:9px">Mới</span>'
+                            : '';
+                        var html =
+                            '<div class="px-3 py-2 border-bottom ' + bgClass + ' tb-item"' +
+                            ' data-id="' + tb.MaTB + '"' +
+                            ' style="cursor:pointer" ' +
+                            ' onmouseover="this.style.background=\'#fffbf0\'"' +
+                            ' onmouseout="this.style.background=\'' + (tb.IsRead ? '' : '#f8f9fa') + '\'">' +
+                            '<div class="d-flex justify-content-between align-items-start">' +
+                            '<strong class="small">' + tb.Title + '</strong>' +
+                            badgeHtml +
+                            '</div>' +
+                            '<div class="text-muted small mt-1">' + tb.Subtitle + '</div>' +
+                            '<div class="text-muted mt-1" style="font-size:10px">' +
+                            '<i class="fa-regular fa-clock me-1"></i>' + tb.ThoiGian +
+                            '</div>' +
+                            '</div>';
+                        $list.append(html);
+                    });
+                });
+            }
+
+            // Bấm chuông → mở/đóng dropdown
+            $('#btnThongBao').on('click', function (e) {
+                e.stopPropagation();
+                var $dd = $('#thongBaoDropdown');
+                if ($dd.hasClass('d-none')) {
+                    $dd.removeClass('d-none');
+                    loadDanhSach();
+                } else {
+                    $dd.addClass('d-none');
+                }
+            });
+
+            // Bấm vào thông báo → đánh dấu đã đọc
+            $(document).on('click', '.tb-item', function () {
+                var $item = $(this);
+                var id = $item.data('id');
+
+                $item.removeClass('bg-light');
+                $item.find('.badge').remove();
+
+                $.post('/ThongBao/DanhDauDaDoc', { id: id }, function () {
+                    loadSoThongBao();
+                });
+            });
+
+            // Đánh dấu tất cả đã đọc
+            $('#btnDocTatCa').on('click', function (e) {
+                e.preventDefault();
+                $.post('/ThongBao/DocTatCa', function () {
+                    loadSoThongBao();
+                    loadDanhSach();
+                });
+            });
+
+            // Click ra ngoài → đóng dropdown
+            $(document).on('click', function (e) {
+                if (!$('#thongBaoWrapper').is(e.target) &&
+                    $('#thongBaoWrapper').has(e.target).length === 0) {
+                    $('#thongBaoDropdown').addClass('d-none');
+                }
+            });
+
+            // Load số thông báo khi trang tải
+            loadSoThongBao();
+
+            // Tự động refresh mỗi 30 giây
+            setInterval(loadSoThongBao, 30000);
+
+        })(jQuery);
+    </script>
+    <script>
+        (function ($) {
+            if (!$('#btnAvatar').length) return;
+
+            // Bấm avatar → mở/đóng dropdown
+            $('#btnAvatar').on('click', function (e) {
+                e.stopPropagation();
+                var $dd = $('#avatarDropdown');
+                if ($dd.hasClass('d-none')) {
+                    $dd.removeClass('d-none');
+                } else {
+                    $dd.addClass('d-none');
+                }
+            });
+
+            // Click ra ngoài → đóng dropdown
+            $(document).on('click', function (e) {
+                if (!$('#avatarWrapper').is(e.target) &&
+                    $('#avatarWrapper').has(e.target).length === 0) {
+                    $('#avatarDropdown').addClass('d-none');
+                }
+            });
+
+        })(jQuery);
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+
+

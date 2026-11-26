@@ -1,0 +1,140 @@
+﻿@model List<WebBanDoAnOnline.Models.DanhGia>
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+    ViewBag.Title = "Quản lý đánh giá";
+}
+
+<h4 class="fw-bold mb-4">
+    <i class="fa-solid fa-star text-warning me-2"></i>
+    Quản lý đánh giá
+</h4>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Khách hàng</th>
+                    <th>Số sao</th>
+                    <th>Bình luận</th>
+                    <th>Phản hồi</th>
+                    <th>Trạng thái</th>
+                    <th width="220">Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    bool isHidden = item.isDelete == 1;
+
+                    <tr class="@(isHidden ? "table-secondary" : "")" id="row-@item.MaDG">
+
+                        <td>@item.SanPham.TenSP</td>
+
+                        <td>@item.TaiKhoan.HoTen</td>
+
+                        <td>
+                            @for (int i = 0; i < item.SoSao; i++)
+                            {
+                                <span style="color:gold">★</span>
+                            }
+                        </td>
+
+                        <td style="max-width:220px">
+                            <span class="small">@item.BinhLuan</span>
+                        </td>
+
+                        <td style="max-width:200px">
+                            <span class="small text-muted">@item.PhanHoi</span>
+                        </td>
+
+                        <td id="status-@item.MaDG">
+                            @if (isHidden)
+                            {
+                                <span class="badge bg-secondary">Đã ẩn</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Đang hiện</span>
+                            }
+                        </td>
+
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="@Url.Action("PhanHoi", new { id = item.MaDG })"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="fa-solid fa-reply"></i> Phản hồi
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-outline-warning btn-sm btn-an-hien"
+                                        data-id="@item.MaDG"
+                                        id="btn-an-hien-@item.MaDG">
+                                    @if (isHidden)
+                                    {
+                                        <span><i class="fa-solid fa-eye"></i> Hiện</span>
+                                    }
+                                    else
+                                    {
+                                        <span><i class="fa-solid fa-eye-slash"></i> Ẩn</span>
+                                    }
+                                </button>
+
+                                <a href="@Url.Action("XoaDanhGia", new { id = item.MaDG })"
+                                   class="btn btn-outline-danger btn-sm"
+                                   onclick="return confirm('Bạn có chắc muốn xóa đánh giá này không?');">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $(document).on('click', '.btn-an-hien', function () {
+        var $btn = $(this);
+        var id = $btn.data('id');
+
+        $.post('@Url.Action("AnHienDanhGia", "AdminDanhGia")', { id: id }, function (res) {
+            if (res.success) {
+                var $row = $('#row-' + id);
+                var $status = $('#status-' + id);
+
+                if (res.isHidden) {
+                    $row.addClass('table-secondary');
+                    $status.html('<span class="badge bg-secondary">Đã ẩn</span>');
+                    $btn.html('<i class="fa-solid fa-eye"></i> Hiện');
+                } else {
+                    $row.removeClass('table-secondary');
+                    $status.html('<span class="badge bg-success">Đang hiện</span>');
+                    $btn.html('<i class="fa-solid fa-eye-slash"></i> Ẩn');
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: res.message,
+                    timer: 1200,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Thất bại', text: res.message });
+            }
+        }).fail(function () {
+            Swal.fire({ icon: 'error', title: 'Lỗi kết nối' });
+        });
+    });
+    </script>
+}

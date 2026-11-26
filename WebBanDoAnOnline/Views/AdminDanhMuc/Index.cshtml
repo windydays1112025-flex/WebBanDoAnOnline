@@ -1,0 +1,105 @@
+﻿@model List<WebBanDoAnOnline.Models.DanhMuc>
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+<h2>Quản lý danh mục</h2>
+
+@if (TempData["Success"] != null)
+{<div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+<p>
+    @Html.ActionLink(
+        "Thêm danh mục",
+        "Create",
+        null,
+        new { @class = "btn btn-success" })
+</p>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        @using (Html.BeginForm("Index", "AdminDanhMuc", FormMethod.Get))
+        {
+            <div class="input-group">
+                <input type="text"
+                       name="keyword"
+                       value="@ViewBag.Keyword"
+                       class="form-control"
+                       placeholder="Nhập tên danh mục..." />
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Tìm kiếm
+                </button>
+
+                <a href="@Url.Action("Index", "AdminDanhMuc")"
+                   class="btn btn-secondary">
+                    Làm mới
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<table class="table table-bordered table-striped">
+
+    <tr>
+        <th>Mã</th>
+        <th>Ảnh</th>
+        <th>Tên danh mục</th>
+        <th>Ngày tạo</th>
+        <th>Thao tác</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            <td>@item.MaDM</td>
+
+            <td>
+                @if (!string.IsNullOrEmpty(item.Anh))
+                {
+                    <img src="@Url.Content(item.Anh)"
+                         width="80"
+                         height="80" />
+                }
+            </td>
+
+            <td>@item.TenDM</td>
+
+            <td>
+                @(item.Create_at.HasValue
+                ? item.Create_at.Value.ToString("dd/MM/yyyy")
+                : "")
+            </td>
+
+            <td>
+
+                @Html.ActionLink(
+                    "Sửa",
+                    "Edit",
+                    new { id = item.MaDM },
+                    new { @class = "btn btn-warning btn-sm" })
+
+                @Html.Raw(" ")
+
+                @Html.ActionLink(
+                    "Xóa",
+                    "Delete",
+                    new { id = item.MaDM },
+                    new
+                    {
+                        @class = "btn btn-danger btn-sm",
+                        onclick = "return confirm('Bạn có chắc muốn xóa?');"
+                    })
+
+            </td>
+
+        </tr>
+    }
+
+</table>

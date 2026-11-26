@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "Quên mật khẩu";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width:60px;height:60px;background-color:#fff3e0">
+                            <i class="fa-solid fa-key fa-lg" style="color:#f97316"></i>
+                        </div>
+                        <h4 class="fw-bold mb-1">Quên mật khẩu</h4>
+                        <p class="text-muted small">
+                            Nhập email đã đăng ký để đặt lại mật khẩu
+                        </p>
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger py-2 small">
+                            <i class="fa-solid fa-circle-exclamation me-1"></i>
+                            @ViewBag.Error
+                        </div>
+                    }
+
+                <form method="post">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Email đã đăng ký</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fa-solid fa-envelope text-muted"></i>
+                            </span>
+                            <input type="email"
+                                   name="Email"
+                                   class="form-control border-start-0"
+                                   placeholder="example@email.com"
+                                   required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Số điện thoại đã đăng ký</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fa-solid fa-phone text-muted"></i>
+                            </span>
+                            <input type="text"
+                                   name="SoDienThoai"
+                                   class="form-control border-start-0"
+                                   placeholder="Nhập số điện thoại"
+                                   required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Mật khẩu mới</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fa-solid fa-lock text-muted"></i>
+                            </span>
+                            <input type="password"
+                                   id="inputMatKhauMoi"
+                                   name="MatKhauMoi"
+                                   class="form-control border-start-0 border-end-0"
+                                   placeholder="Tối thiểu 6 ký tự"
+                                   required />
+                            <span class="input-group-text bg-light border-start-0"
+                                  style="cursor:pointer"
+                                  onclick="toggleMK('inputMatKhauMoi','eye1')">
+                                <i class="fa-regular fa-eye text-muted" id="eye1"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">Xác nhận mật khẩu mới</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fa-solid fa-lock text-muted"></i>
+                            </span>
+                            <input type="password"
+                                   id="inputXacNhan"
+                                   name="XacNhanMatKhau"
+                                   class="form-control border-start-0 border-end-0"
+                                   placeholder="Nhập lại mật khẩu mới"
+                                   required />
+                            <span class="input-group-text bg-light border-start-0"
+                                  style="cursor:pointer"
+                                  onclick="toggleMK('inputXacNhan','eye2')">
+                                <i class="fa-regular fa-eye text-muted" id="eye2"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning w-100 fw-bold">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Đặt lại mật khẩu
+                    </button>
+
+                </form>
+
+                    <hr class="my-3" />
+
+                    <p class="text-center small mb-0">
+                        Đã nhớ mật khẩu?
+                        <a href="@Url.Action("DangNhap","TaiKhoan")"
+                           class="text-warning fw-bold text-decoration-none">
+                            Đăng nhập
+                        </a>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function toggleMK(inputId, iconId) {
+            var input = document.getElementById(inputId);
+            var icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+    </script>
+}

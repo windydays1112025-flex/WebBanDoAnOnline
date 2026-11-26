@@ -1,0 +1,167 @@
+﻿@model List<WebBanDoAnOnline.Models.DonHang>
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+    ViewBag.Title = "Quản lý đơn hàng";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>PT Thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th width="140">Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>#@item.MaDH</strong></td>
+
+                        <td>@item.TaiKhoan.HoTen</td>
+
+                        <td class="text-muted small">
+                            @(item.Create_at.HasValue
+                                ? item.Create_at.Value.ToString("dd/MM/yyyy HH:mm")
+                                : "")
+                        </td>
+
+                        <td class="text-warning fw-bold">
+                            @(item.TongTien.HasValue
+                                ? item.TongTien.Value.ToString("N0")
+                                : "0") đ
+                        </td>
+
+                        <td>
+                            @if (string.IsNullOrEmpty(item.PhuongThucTT))
+                            {
+                                <span class="badge bg-secondary">Chưa xác định</span>
+                            }
+                            else if (item.PhuongThucTT == "Tiền mặt" || item.PhuongThucTT == "COD")
+                            {
+                                <span class="badge bg-warning text-dark">Tiền mặt</span>
+                            }
+                            else if (item.PhuongThucTT == "Chuyển khoản")
+                            {
+                                <span class="badge bg-success">Chuyển khoản</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info">@item.PhuongThucTT</span>
+                            }
+                        </td>
+
+                        <td>
+                            @{
+                                string bgColor = "#e9ecef", textColor = "#495057";
+                                if (item.TrangThai == "Chờ xác nhận") { bgColor = "#fff3cd"; textColor = "#92700f"; }
+                                else if (item.TrangThai == "Đã xác nhận") { bgColor = "#cfe2ff"; textColor = "#0a4ea3"; }
+                                else if (item.TrangThai == "Đang giao") { bgColor = "#d1ecf1"; textColor = "#0c6675"; }
+                                else if (item.TrangThai == "Đã nhận hàng") { bgColor = "#d1f2e0"; textColor = "#0f6b3f"; }
+                                else if (item.TrangThai == "Đã hủy") { bgColor = "#fde0e0"; textColor = "#a3201f"; }
+                            }
+
+                            <select class="form-select form-select-sm trang-thai-select"
+                                    data-id="@item.MaDH"
+                                    data-old="@item.TrangThai"
+                                    style="background-color:@bgColor; color:@textColor; font-weight:600; border:none; min-width:140px;">
+                                <option value="Chờ xác nhận" selected="@(item.TrangThai == "Chờ xác nhận")">Chờ xác nhận</option>
+                                <option value="Đã xác nhận" selected="@(item.TrangThai == "Đã xác nhận")">Đã xác nhận</option>
+                                <option value="Đang giao" selected="@(item.TrangThai == "Đang giao")">Đang giao</option>
+                                <option value="Đã nhận hàng" selected="@(item.TrangThai == "Đã nhận hàng")">Đã nhận hàng</option>
+                                <option value="Đã hủy" selected="@(item.TrangThai == "Đã hủy")"> Hủy Đơn</option>
+                            </select>
+                        </td>
+
+                        <td>
+                            <a href="@Url.Action("ChiTiet", "AdminDonHang", new { id = item.MaDH })"
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fa-solid fa-eye"></i> Chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    var colorMap = {
+        "Chờ xác nhận":  { bg: "#fff3cd", text: "#92700f" },
+        "Đã xác nhận":   { bg: "#cfe2ff", text: "#0a4ea3" },
+        "Đang giao":     { bg: "#d1ecf1", text: "#0c6675" },
+        "Đã nhận hàng":  { bg: "#d1f2e0", text: "#0f6b3f" },
+        "Đã hủy":        { bg: "#fde0e0", text: "#a3201f" }
+    };
+
+    $(document).on('change', '.trang-thai-select', function () {
+        var $select = $(this);
+        var maDH = $select.data('id');
+        var trangThaiCu = $select.data('old');
+        var trangThaiMoi = $select.val();
+
+        Swal.fire({
+            icon: 'question',
+            title: 'Xác nhận cập nhật?',
+            html: 'Chuyển đơn <strong>#' + maDH + '</strong> từ<br>' +
+                  '<span class="text-secondary">' + trangThaiCu + '</span> → ' +
+                  '<strong>' + trangThaiMoi + '</strong>',
+            showCancelButton: true,
+            confirmButtonColor: '#f97316',
+            confirmButtonText: 'Cập nhật',
+            cancelButtonText: 'Hủy'
+        }).then(function (result) {
+            if (!result.isConfirmed) {
+                $select.val(trangThaiCu);
+                return;
+            }
+
+            $.post('@Url.Action("CapNhatTrangThai", "AdminDonHang")',
+                { id: maDH, trangThaiMoi: trangThaiMoi },
+                function (res) {
+                    if (res.success) {
+                        var colors = colorMap[trangThaiMoi];
+                        $select.css({ 'background-color': colors.bg, 'color': colors.text });
+                        $select.data('old', trangThaiMoi);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã cập nhật!',
+                            timer: 1200,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        $select.val(trangThaiCu);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại',
+                            text: res.message
+                        });
+                    }
+                }
+            ).fail(function () {
+                $select.val(trangThaiCu);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi kết nối',
+                    text: 'Không thể kết nối server.'
+                });
+            });
+        });
+    });
+    </script>
+}

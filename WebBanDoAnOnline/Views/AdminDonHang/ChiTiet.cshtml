@@ -1,0 +1,65 @@
+﻿@model List<WebBanDoAnOnline.Models.ChiTietDonHang>
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+}
+
+<h2>
+    Chi tiết đơn hàng #@ViewBag.MaDH
+</h2>
+
+@if (ViewBag.AnhThanhToan != null)
+{
+    <div class="mb-4">
+
+        <h4>Biên lai chuyển khoản</h4>
+
+        <img src="@Url.Content(ViewBag.AnhThanhToan)"
+             class="img-thumbnail"
+             style="max-width:500px;" />
+
+    </div>
+}
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Tên sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.SanPham.TenSP</td>
+
+                <td>
+                    @item.SoLuong
+                </td>
+
+                <td>
+                    @item.DonGia.ToString("N0")
+                </td>
+
+                <td>
+                    @((item.SoLuong.Value * item.DonGia).ToString("N0"))
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<a href="@Url.Action("Index")"
+   class="btn btn-secondary">
+    Quay lại
+</a>

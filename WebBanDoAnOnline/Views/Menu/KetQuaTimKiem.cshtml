@@ -1,0 +1,110 @@
+﻿@model List<WebBanDoAnOnline.Models.SanPham>
+@{
+    ViewBag.Title = "Kết quả tìm kiếm";
+}
+
+<div class="container mt-4">
+
+    <h4>
+        Kết quả tìm kiếm cho <strong>"@ViewBag.TuKhoa"</strong>
+        <small class="text-muted fs-6">(tìm thấy @ViewBag.SoKetQua món)</small>
+    </h4>
+
+    <hr />
+
+    @if (Model.Count == 0)
+    {
+        <div class="text-center py-5">
+            <i class="fa-solid fa-bowl-food fa-3x text-muted mb-3"></i>
+            <p class="text-muted">Không tìm thấy món ăn nào phù hợp.</p>
+            @Html.ActionLink("Xem toàn bộ thực đơn", "Index", "Menu",
+                null, new { @class = "btn btn-warning mt-2" })
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+            @foreach (var sp in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+
+                        <img src="@Url.Content(sp.Anh)"
+                             class="card-img-top"
+                             alt="@sp.TenSP"
+                             style="height:180px; object-fit:cover;"
+                             onerror="this.src='/Content/images/no-image.png'" />
+
+                        <div class="card-body">
+                            <h6 class="card-title">@sp.TenSP</h6>
+                            <p class="text-warning fw-bold mb-0">
+                                @sp.Gia.Value.ToString("N0") đ
+                            </p>
+                        </div>
+
+                        <div class="card-footer bg-transparent border-0 d-flex gap-2">
+                            @Html.ActionLink("Chi tiết", "ChiTiet", "Menu",
+                                new { id = sp.MaSP },
+                                new { @class = "btn btn-sm btn-outline-secondary flex-fill" })
+
+                            @if (Session["TaiKhoan"] != null)
+                            {
+                                <a href="@Url.Action("ThemGioHang", "GioHang", new { id = sp.MaSP })"
+                                   class="btn btn-sm btn-warning flex-fill btn-dat-mon">
+                                    Đặt món
+                                </a>
+                            }
+                            else
+                            {
+                                <button type="button"
+                                        class="btn btn-sm btn-warning flex-fill btn-chua-dangnhap"
+                                        data-url="@Url.Action("DangNhap", "TaiKhoan")?returnUrl=@Url.Action("Index", "Menu")">
+                                    Đặt món
+                                </button>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).on('click', '.btn-chua-dangnhap', function () {
+            var loginUrl = $(this).data('url');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Chưa đăng nhập',
+                text: 'Bạn cần đăng nhập để đặt món!',
+                showCancelButton: true,
+                confirmButtonColor: '#f97316',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fa-solid fa-right-to-bracket me-1"></i> Đăng nhập ngay',
+                cancelButtonText: 'Để sau'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = loginUrl;
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-dat-mon', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            Swal.fire({
+                icon: 'success',
+                title: 'Đã thêm vào giỏ!',
+                text: 'Món ăn đã được thêm vào giỏ hàng.',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(function () {
+                window.location.href = url;
+            });
+        });
+    </script>
+}

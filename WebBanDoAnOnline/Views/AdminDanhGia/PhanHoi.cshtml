@@ -1,0 +1,50 @@
+﻿@model WebBanDoAnOnline.Models.DanhGia
+
+<h2>Phản hồi đánh giá</h2>
+
+<div class="card mb-3">
+
+    <div class="card-body">
+
+        <strong>Khách hàng:</strong>
+        @Model.TaiKhoan.HoTen
+
+        <br />
+
+        <strong>Sản phẩm:</strong>
+        @Model.SanPham.TenSP
+
+        <br />
+
+        <strong>Số sao:</strong>
+        @Model.SoSao ⭐
+
+        <hr />
+
+        <strong>Bình luận:</strong>
+
+        <p>
+            @Model.BinhLuan
+        </p>
+
+    </div>
+
+</div>
+
+<form method="post">
+
+    <textarea name="phanHoi"
+              class="form-control"
+              rows="5">@Model.PhanHoi</textarea>
+
+    <br />
+
+    <button type="submit"
+            class="btn btn-success">
+
+        Lưu phản hồi
+
+    </button>
+
+</form>
+

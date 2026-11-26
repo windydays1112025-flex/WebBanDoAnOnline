@@ -1,0 +1,783 @@
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    margin-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+/* --- BIẾN MÀU VÀ FONT CHỮ TOÀN CỤC --- */
+:root {
+    --primary-color: #F58634; /* Màu cam chủ đạo */
+    --text-color: #212529; /* Màu chữ đen */
+    --body-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Font chữ */
+}
+
+html, body {
+    height: 100%; /* Đảm bảo html và body chiếm toàn bộ chiều cao */
+}
+
+body {
+    font-family: var(--body-font);
+    display: flex; /* Kích hoạt Flexbox */
+    flex-direction: column; /* Sắp xếp các phần tử con theo cột */
+    background-color: #f8f9fa; /* Thêm màu nền xám nhạt cho body */
+}
+
+.page-content {
+    flex: 1 0 auto; /* Yêu cầu phần tử này giãn ra để lấp đầy không gian */
+}
+
+
+/* --- TÙY CHỈNH HEADER --- */
+.main-header {
+    background-color: #f58220 !important;
+    border-bottom: 1px solid #e9ecef;
+    padding: 10px 0;
+    /* Có thể thêm:
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    để header luôn dính ở trên cùng khi cuộn trang */
+}
+
+/* 1. Logo */
+.navbar-brand {
+    font-size: 24px;
+    font-weight: 900;
+    color: #fff !important;
+}
+
+/* 2. Menu điều hướng */
+.navbar-nav .nav-item {
+    margin: 0 15px;
+}
+
+.navbar-nav .nav-link {
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff !important;
+    padding-bottom: 8px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+    .navbar-nav .nav-link:hover {
+        color: var(--primary-color) !important;
+    }
+
+    /* Gạch chân cho mục menu đang active bằng pseudo-element ::after */
+    .navbar-nav .nav-link.active::after {
+        content: '';
+        position: absolute; /* Định vị gạch chân so với nav-link */
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: var(--text-color);
+        border-radius: 2px;
+    }
+
+/* 3. Các thành phần bên phải */
+.header-actions {
+    gap: 15px; /* Tạo khoảng cách giữa các icon */
+}
+
+/* Ô tìm kiếm */
+.search-box {
+    position: relative; /* Nền tảng để đặt icon kính lúp bên trong */
+}
+
+    .search-box .form-control {
+        border-radius: 20px;
+        border: 1px solid #ced4da;
+        padding-left: 15px;
+        padding-right: 35px; /* Chừa chỗ cho icon search */
+        width: 250px;
+        transition: border-color 0.3s ease;
+    }
+
+        .search-box .form-control:focus {
+            box-shadow: none;
+            border-color: var(--primary-color);
+        }
+
+    .search-box .search-icon {
+        position: absolute; /* Định vị icon so với search-box */
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%); /* Căn giữa icon theo chiều dọc một cách hoàn hảo */
+        color: #6c757d;
+    }
+
+/* Icons */
+.header-icon {
+    font-size: 20px;
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+    .header-icon:hover {
+        color: var(--primary-color);
+    }
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* Bo tròn ảnh */
+    object-fit: cover; /* Đảm bảo ảnh không bị méo */
+}
+
+/* Tùy chỉnh body-content của MVC template */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* --- HERO SECTION --- */
+.hero-image {
+    max-width: 100%; /* Giới hạn chiều rộng tối đa bằng chiều rộng của thẻ chứa nó */
+    height: auto; /* Tự động điều chỉnh chiều cao để giữ đúng tỷ lệ ảnh */
+    border-radius: 12px; /* Bo tròn các góc để ảnh trông mềm mại hơn */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1); /* Thêm hiệu ứng đổ bóng nhẹ */
+}
+
+/* --- PRODUCT CARD SECTION --- */
+.product-card {
+    background-color: #fff;
+    border: 1px solid #e9ecef; /* Viền xám nhạt */
+    border-radius: 16px; /* Bo góc lớn hơn */
+    overflow: hidden;
+    padding: 1rem; /* Thêm padding bên trong thẻ */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px; /* Bo góc cho ảnh */
+    margin-bottom: 1rem; /* Khoảng cách giữa ảnh và tên món ăn */
+}
+
+.product-info {
+    padding: 0; /* Reset padding cũ */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Giúp nút "Xem chi tiết" luôn ở dưới cùng */
+}
+
+.product-name {
+    font-size: 1.25rem; /* Tăng kích thước chữ */
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between; /* Đẩy giá và thời gian ra 2 bên */
+    color: #6c757d; /* Màu chữ xám */
+    margin-bottom: 1rem;
+}
+
+    .product-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem; /* Khoảng cách giữa icon và chữ */
+    }
+
+    .product-meta .fa-tag,
+    .product-meta .fa-shipping-fast {
+        color: var(--primary-color); /* Màu cam cho icon */
+    }
+
+.product-actions {
+    display: flex;              /* 1. Bật Flexbox (đặt 2 nút trên 1 hàng) */
+    justify-content: space-between; /* 2. Đẩy 2 item ra 2 phía (trái/phải) */
+    align-items: center;
+
+    margin-top: 10px; /* (Tùy chọn) Thêm chút khoảng cách với phần giá tiền ở trên */
+}
+
+.btn-khampha {
+    background: linear-gradient(135deg, #ff7b00, #ffb700);
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 15px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(255,123,0,0.3);
+}
+
+.btn-khampha:hover {
+    transform: translateY(-3px) scale(1.05);
+    color: white;
+    box-shadow: 0 12px 25px rgba(255,123,0,0.5);
+}
+
+.btn-details {
+    background-color: #000;
+/*    Nền đen */
+        color: #fff;
+/*    Chữ trắng */
+        font-weight: 600;
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: auto;
+/*    Đẩy nút xuống dưới cùng */
+    transition: background-color 0.3s ease;
+}
+
+    .btn-details:hover {
+        background-color: #333;
+/*        Màu đen nhạt hơn khi hover */
+        color: #fff;
+    }
+
+
+/* Tùy chọn: Tạo kiểu cho nút "+" cho đẹp 
+   (Bạn có thể bỏ qua nếu đã có class "btn")
+*/
+.btn-add-cart {
+    background-color: #007bff; /* Màu xanh (ví dụ) */
+    color: white; /* Màu icon trắng */
+    /* Tạo nút hình tròn */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    /* Căn icon + vào chính giữa nút tròn */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none; /* Bỏ gạch chân nếu dùng thẻ <a> */
+    
+    cursor: pointer;
+}
+
+    .btn-add-cart:hover {
+        background-color: #0056b3;
+    }
+
+
+}
+
+/* --- Cài đặt chung & Reset --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Sử dụng font Poppins đã import, nếu không có thì dùng sans-serif */
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    /* Giả lập nội dung trang để đẩy footer xuống dưới */
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit; /* Kế thừa màu từ thẻ cha */
+}
+
+ul {
+    list-style: none;
+}
+
+/* --- Lớp Container (Giúp căn giữa nội dung) --- */
+.container {
+    width: 90%;
+    max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+    margin: 0 auto; /* Tự động căn giữa */
+}
+
+/* --- Định dạng Footer chính --- */
+.site-footer {
+    background-color: #f58220; /* Màu cam giống trong ảnh */
+    color: #ffffff; /* Toàn bộ chữ màu trắng */
+    padding: 30px 0; /* Khoảng đệm 30px trên/dưới, 0px trái/phải */
+}
+
+/* --- Hàng trên của Footer --- */
+.footer-top {
+    display: flex; /* Sử dụng Flexbox để căn chỉnh */
+    justify-content: space-between; /* Đẩy các mục ra 3 góc */
+    align-items: center; /* Căn giữa các mục theo chiều dọc */
+    flex-wrap: wrap; /* Cho phép rớt hàng khi màn hình nhỏ */
+    margin-bottom: 25px; /* Khoảng cách với hàng dưới (icon) */
+}
+
+/* --- Logo --- */
+.footer-logo a {
+    font-size: 32px; /* Cỡ chữ logo */
+}
+
+.logo-bold {
+    font-weight: 700; /* In đậm chữ "FuTho" */
+}
+
+.logo-regular {
+    font-weight: 300; /* Làm mỏng chữ "Food" */
+}
+
+/* --- Navigation --- */
+.footer-nav ul {
+    display: flex; /* Dàn các mục nav ra hàng ngang */
+    gap: 25px; /* Khoảng cách giữa các mục nav */
+}
+
+.footer-nav a {
+    font-size: 16px;
+    transition: opacity 0.3s ease; /* Hiệu ứng mờ khi hover */
+}
+
+    .footer-nav a:hover {
+        opacity: 0.8;
+    }
+
+/* --- Liên hệ --- */
+.footer-contact p {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* --- Hàng dưới (Icon) --- */
+.footer-bottom {
+    text-align: center; /* Căn giữa các icon */
+}
+
+.footer-social a {
+    font-size: 20px; /* Cỡ icon */
+    margin: 0 12px; /* Khoảng cách giữa các icon */
+    transition: opacity 0.3s ease;
+}
+
+    .footer-social a:hover {
+        opacity: 0.8;
+    }
+
+/* --- Responsive cho điện thoại --- */
+@media (max-width: 768px) {
+    .footer-top {
+        flex-direction: column; /* Xếp 3 mục (logo, nav, sđt) theo cột dọc */
+        gap: 20px; /* Khoảng cách giữa 3 mục đó */
+        text-align: center;
+    }
+
+    .footer-nav ul {
+        flex-direction: column; /* Xếp các mục nav theo cột dọc */
+        gap: 10px; /* Giảm khoảng cách */
+    }
+}
+
+
+/* =================================================================== */
+/* --- BỔ SUNG CSS CHO TRANG THỰC ĐƠN --- */
+/* =================================================================== */
+
+/* 1. Phần danh mục */
+.menu-categories {
+    display: flex; /* Sắp xếp các danh mục theo hàng ngang */
+    gap: 20px;
+    overflow-x: auto; /* Cho phép cuộn ngang trên di động */
+    padding-bottom: 15px; /* Tạo khoảng trống cho thanh cuộn */
+    align-items: flex-start; /* Căn các item lên trên cùng */
+}
+
+/* 1a. Style cho item đặc biệt (Món chính) */
+.category-item-special {
+    display: block;
+    text-decoration: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--primary-color); /* Dùng biến màu cam từ code cũ của bạn */
+    color: #fff;
+    font-weight: 600;
+    flex-shrink: 0; /* Ngăn item bị co lại */
+    width: 140px; /* Chiều rộng cố định */
+    transition: transform 0.2s ease;
+}
+
+    .category-item-special:hover {
+        transform: scale(1.05);
+        color: #fff;
+    }
+
+    .category-item-special img {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        display: block;
+        background-color: #fff; /* Nền trắng cho ảnh */
+    }
+
+    .category-item-special span {
+        display: block;
+        padding: 10px;
+        text-align: center;
+    }
+
+/* 1b. Style cho các item tròn (còn lại) */
+.category-item-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+    width: 80px; /* Chiều rộng cố định */
+    transition: opacity 0.2s ease;
+}
+
+    .category-item-circle:hover {
+        opacity: 0.8;
+    }
+
+    .category-item-circle .category-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 10px;
+        background-color: #fff;
+        border: 1px solid #e9ecef; /* Viền xám nhạt */
+    }
+
+        .category-item-circle .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .category-item-circle .category-name {
+        font-weight: 500;
+        color: var(--text-color);
+        text-align: center;
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+
+
+/* 2. Phần Lưới Sản Phẩm */
+.menu-product-card {
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px; /* Bo góc nhẹ */
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Giúp các card cao bằng nhau */
+    display: flex;
+    flex-direction: column;
+}
+
+    .menu-product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+.product-card-img {
+    width: 100%;
+    height: 180px; /* Chiều cao cố định cho ảnh */
+    object-fit: cover;
+}
+
+.product-card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Quan trọng: để đẩy nút "Đặt món" xuống dưới */
+}
+
+.product-card-title {
+    font-size: 1.15rem; /* ~18px */
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+}
+
+.product-card-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #6c757d; /* Màu chữ xám */
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+    .product-card-meta span {
+        display: flex;
+        align-items: center;
+        gap: 6px; /* Khoảng cách icon và chữ */
+    }
+
+    .product-card-meta .fa-tags,
+    .product-card-meta .fa-clock {
+        color: #888; /* Màu icon xám */
+    }
+
+/* Nút Đặt món */
+.btn-order {
+    background-color: var(--primary-color);
+    color: #fff !important; /* Ghi đè màu chữ */
+    font-weight: 600;
+    text-align: center;
+    padding: 0.6rem;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: auto; /* Quan trọng: đẩy nút xuống đáy card */
+    transition: background-color 0.3s ease;
+}
+
+    .btn-order:hover {
+        background-color: #e0701b; /* Màu cam đậm hơn */
+        color: #fff !important;
+    }
+
+/* =================================================================== */
+/* --- CSS CHO TRANG THỰC ĐƠN (Menu/Index.cshtml) --- */
+/* =================================================================== */
+
+/* 1. Phần danh mục */
+.menu-categories {
+    display: flex; /* Sắp xếp các danh mục theo hàng ngang */
+    gap: 20px;
+    overflow-x: auto; /* Cho phép cuộn ngang trên di động */
+    padding-bottom: 15px; /* Tạo khoảng trống cho thanh cuộn */
+    align-items: flex-start; /* Căn các item lên trên cùng */
+}
+
+/* 1a. Style cho item đặc biệt (Món chính) */
+.category-item-special {
+    display: block;
+    text-decoration: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--primary-color); /* Dùng biến màu cam từ code cũ của bạn */
+    color: #fff;
+    font-weight: 600;
+    flex-shrink: 0; /* Ngăn item bị co lại */
+    width: 140px; /* Chiều rộng cố định */
+    transition: transform 0.2s ease;
+}
+
+    .category-item-special:hover {
+        transform: scale(1.05);
+        color: #fff;
+    }
+
+    .category-item-special img {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        display: block;
+        background-color: #fff; /* Nền trắng cho ảnh */
+    }
+
+    .category-item-special span {
+        display: block;
+        padding: 10px;
+        text-align: center;
+    }
+
+/* 1b. Style cho các item tròn (còn lại) */
+.category-item-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+    width: 80px; /* Chiều rộng cố định */
+    transition: opacity 0.2s ease;
+}
+
+    .category-item-circle:hover {
+        opacity: 0.8;
+    }
+
+    .category-item-circle .category-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 10px;
+        background-color: #fff;
+        border: 1px solid #e9ecef; /* Viền xám nhạt */
+    }
+
+        .category-item-circle .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .category-item-circle .category-name {
+        font-weight: 500;
+        color: var(--text-color);
+        text-align: center;
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+
+
+/* 2. Phần Lưới Sản Phẩm */
+.menu-product-card {
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px; /* Bo góc nhẹ */
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Giúp các card cao bằng nhau */
+    display: flex;
+    flex-direction: column;
+}
+
+    .menu-product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+.product-card-img {
+    width: 100%;
+    height: 180px; /* Chiều cao cố định cho ảnh */
+    object-fit: cover;
+}
+
+.product-card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Quan trọng: để đẩy nút "Đặt món" xuống dưới */
+}
+
+.product-card-title {
+    font-size: 1.15rem; /* ~18px */
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+}
+
+.product-card-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #6c757d; /* Màu chữ xám */
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+    .product-card-meta span {
+        display: flex;
+        align-items: center;
+        gap: 6px; /* Khoảng cách icon và chữ */
+    }
+
+    .product-card-meta .fa-tags,
+    .product-card-meta .fa-clock {
+        color: #888; /* Màu icon xám */
+    }
+
+/* Nút Đặt món */
+.btn-order {
+    background-color: var(--primary-color);
+    color: #fff !important; /* Ghi đè màu chữ */
+    font-weight: 600;
+    text-align: center;
+    padding: 0.6rem;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: auto; /* Quan trọng: đẩy nút xuống đáy card */
+    transition: background-color 0.3s ease;
+}
+
+    .btn-order:hover {
+        background-color: #e0701b; /* Màu cam đậm hơn */
+        color: #fff !important;
+    }
+
+
+
+/* Thanh gạch chân động: chỉ animate transform */
+/* --- Hiệu ứng gạch chân trượt cho navbar --- */
+/* --- Smooth sliding underline (transform-only) --- */
+.navbar-nav {
+    position: relative;
+}
+
+    /* Ẩn gạch chân pseudo cũ */
+    .navbar-nav .nav-link.active::after {
+        display: none !important;
+    }
+
+    /* Thanh gạch chân động */
+    .navbar-nav .nav-underline {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 1px; /* Dùng scaleX để co giãn chiều ngang */
+        background-color: var(--text-color);
+        border-radius: 2px;
+        transform-origin: left center;
+        /* Hiệu ứng sẽ luôn được bật */
+        transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+        will-change: transform;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .navbar-nav .nav-underline {
+        transition: none;
+    }
+}
+.filter-select {
+    width: 260px;
+    height: 48px;
+    border: 2px solid #f58220;
+    border-radius: 15px;
+    background-color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(245,130,32,0.15);
+    transition: all .3s ease;
+}
+
+    .filter-select:hover {
+        border-color: #ff9f43;
+        box-shadow: 0 6px 18px rgba(245,130,32,0.25);
+    }
+
+    .filter-select:focus {
+        border-color: #f58220;
+        box-shadow: 0 0 0 4px rgba(245, 130, 32, 0.2);
+    }

@@ -1,0 +1,143 @@
+﻿@model List<WebBanDoAnOnline.Models.DonHang>
+
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+}
+
+<h2 class="mb-4">Đơn hàng của tôi</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div id="successMessage"
+         class="alert alert-success">
+
+        @TempData["Success"]
+
+    </div>
+
+    <script>
+        setTimeout(function () {
+
+            let msg =
+                document.getElementById("successMessage");
+
+            if (msg) {
+                msg.style.display = "none";
+            }
+
+        }, 3000);
+    </script>
+}
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã đơn hàng</th>
+            <th>Ngày đặt</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th width="250">Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @if (Model.Count == 0)
+        {
+            <tr>
+                <td colspan="5" class="text-center">
+                    Bạn chưa có đơn hàng nào
+                </td>
+            </tr>
+        }
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    #@item.MaDH
+                </td>
+
+                <td>
+                    @(item.Create_at.HasValue
+                        ? item.Create_at.Value.ToString("dd/MM/yyyy HH:mm")
+                        : "")
+                </td>
+
+                <td class="text-danger fw-bold">
+                    @(item.TongTien.HasValue
+                        ? item.TongTien.Value.ToString("N0")
+                        : "0")
+                    VNĐ
+                </td>
+
+                <td>
+
+                    @if (item.TrangThai == "Chờ xác nhận")
+                    {
+                        <span class="badge bg-warning text-dark">
+                            @item.TrangThai
+                        </span>
+                    }
+                    else if (item.TrangThai == "Đã xác nhận")
+                    {
+                        <span class="badge bg-info">
+                            @item.TrangThai
+                        </span>
+                    }
+                    else if (item.TrangThai == "Đang giao")
+                    {
+                        <span class="badge bg-primary">
+                            @item.TrangThai
+                        </span>
+                    }
+                    else if (item.TrangThai == "Đã nhận hàng")
+                    {
+                        <span class="badge bg-success">
+                            @item.TrangThai
+                        </span>
+                    }
+                    else if (item.TrangThai == "Đã hủy")
+                    {
+                        <span class="badge bg-danger">
+                            @item.TrangThai
+                        </span>
+                    }
+                    else
+                    {
+                        @item.TrangThai
+                    }
+
+                </td>
+
+                <td>
+
+                    <a href="@Url.Action(
+                                "ChiTietDonHang",
+                                "TaiKhoan",
+                                new { id = item.MaDH })"
+                       class="btn btn-primary btn-sm">
+                        Xem chi tiết
+                    </a>
+
+                    @if (item.TrangThai == "Chờ xác nhận")
+                    {
+                        <a href="@Url.Action(
+                                    "HuyDonHang",
+                                    "TaiKhoan",
+                                    new { id = item.MaDH })"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này không?')">
+                            Hủy đơn
+                        </a>
+                    }
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "Đánh giá sản phẩm";
+}
+
+<h2>Đánh giá sản phẩm</h2>
+
+<form method="post">
+
+    <input type="hidden"
+           name="maSP"
+           value="@ViewBag.MaSP" />
+
+    <input type="hidden"
+           name="maDH"
+           value="@ViewBag.MaDH" />
+
+    <div class="mb-3">
+
+        <label>Số sao</label>
+
+        <select name="soSao"
+                class="form-control">
+
+            <option value="5">★★★★★</option>
+            <option value="4">★★★★</option>
+            <option value="3">★★★</option>
+            <option value="2">★★</option>
+            <option value="1">★</option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Bình luận</label>
+
+        <textarea name="binhLuan"
+                  class="form-control"
+                  rows="5"></textarea>
+
+    </div>
+
+    <button type="submit"
+            class="btn btn-success">
+
+        Gửi đánh giá
+
+    </button>
+
+</form>
+

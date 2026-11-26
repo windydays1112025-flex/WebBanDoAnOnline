@@ -1,0 +1,36 @@
+﻿@model WebBanDoAnOnline.Models.TaiKhoan
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">
+                <i class="fa-solid fa-user"></i>
+                Thông tin cá nhân
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <p><strong>Họ tên:</strong> @Model.HoTen</p>
+
+            <p><strong>Email:</strong> @Model.Email</p>
+
+            <p><strong>Số điện thoại:</strong> @Model.SoDienThoai</p>
+
+            <p><strong>Tên tài khoản:</strong> @Model.TenTK</p>
+
+            <div class="mt-4">
+                <a href="@Url.Action("SuaThongTin","TaiKhoan")"
+                   class="btn btn-warning">
+                    Chỉnh sửa thông tin
+                </a>
+
+                <a href="@Url.Action("DoiMatKhau","TaiKhoan")"
+                   class="btn btn-dark">
+                    Đổi mật khẩu
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

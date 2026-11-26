@@ -1,0 +1,99 @@
+﻿@model List<WebBanDoAnOnline.Models.SanPham>
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+<h2>Quản lý sản phẩm</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+<p>
+    @Html.ActionLink("Thêm sản phẩm", "Create", "AdminSanPham",
+        null, new { @class = "btn btn-success" })
+</p>
+<div class="row mb-3">
+    <div class="col-md-6">
+        @using (Html.BeginForm("Index", "AdminSanPham", FormMethod.Get))
+        {
+            <div class="input-group">
+                <input type="text"
+                       name="keyword"
+                       value="@ViewBag.Keyword"
+                       class="form-control"
+                       placeholder="Nhập tên sản phẩm cần tìm..." />
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    <i class="fa fa-search"></i> Tìm kiếm
+                </button>
+
+                <a href="@Url.Action("Index","AdminSanPham")"
+                   class="btn btn-secondary">
+                    Làm mới
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<table class="table table-bordered table-hover">
+
+    <tr>
+        <th>Ảnh</th>
+        <th>Tên sản phẩm</th>
+        <th>Giá</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <img src="@Url.Content(item.Anh ?? "~/img/no-image.png")"
+                     width="80"
+                     height="80"
+                     style="object-fit:cover;" />
+            </td>
+
+            <td>@item.TenSP</td>
+
+            <td>
+                @String.Format("{0:N0}", item.Gia ?? 0)
+            </td>
+
+            <td>@item.TrangThai</td>
+
+            <td>
+                <a href="@Url.Action("Edit", "AdminSanPham", new { id = item.MaSP })"
+                   class="btn btn-warning btn-sm">
+                    <i class="fa-solid fa-pen-to-square"></i> Sửa
+                </a>
+
+                @using (Html.BeginForm("Delete", "AdminSanPham", FormMethod.Post,
+                    new { style = "display:inline;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="MaSP" value="@item.MaSP" />
+
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+                        <i class="fa-solid fa-trash"></i> Xóa
+                    </button>
+                }
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,198 @@
+﻿@model List<WebBanDoAnOnline.Models.DiaChi>
+
+@{
+    ViewBag.Title = "Xác nhận đặt hàng";
+}
+
+<h2>Chọn địa chỉ giao hàng</h2>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-warning">
+
+        Bạn chưa có địa chỉ giao hàng.
+
+        <br />
+        <br />
+
+        <a href="@Url.Action("Create","DiaChi")"
+           class="btn btn-success">
+            Thêm địa chỉ
+        </a>
+
+    </div>
+}
+else
+{
+    <form method="post"
+          enctype="multipart/form-data">
+
+        <h4>Địa chỉ giao hàng</h4>
+
+        @foreach (var item in Model)
+        {
+            <div class="card mb-3">
+
+                <div class="card-body">
+
+                    <input type="radio"
+                           name="MaDiaChi"
+                           value="@item.MaDiaChi"
+                           required />
+
+                    <strong>
+                        @item.TenNguoiNhan
+                    </strong>
+
+                    <br />
+
+                    SĐT:
+                    @item.SDTNhan
+
+                    <br />
+
+                    Địa chỉ:
+                    @item.DiaChiCuThe
+
+                </div>
+
+            </div>
+        }
+
+        <hr />
+
+        <h4>Phương thức thanh toán</h4>
+
+        <div class="form-check">
+
+            <input class="form-check-input"
+                   type="radio"
+                   name="phuongThuc"
+                   value="COD"
+                   id="cod"
+                   checked />
+
+            <label class="form-check-label"
+                   for="cod">
+
+                Thanh toán khi nhận hàng (COD)
+
+            </label>
+
+        </div>
+
+        <div class="form-check mb-3">
+
+            <input class="form-check-input"
+                   type="radio"
+                   name="phuongThuc"
+                   value="Chuyển khoản"
+                   id="ck" />
+
+            <label class="form-check-label"
+                   for="ck">
+
+                Chuyển khoản ngân hàng
+
+            </label>
+
+        </div>
+
+        <div id="thongTinCK"
+             class="alert alert-info"
+             style="display:none;">
+
+            <h5>
+                Thông tin chuyển khoản
+            </h5>
+
+            <strong>Ngân hàng:</strong>
+            MB Bank
+
+            <br />
+
+            <strong>Số tài khoản:</strong>
+            123456789
+
+            <br />
+
+            <strong>Chủ tài khoản:</strong>
+            ShopDoAnOnline
+
+            <br />
+
+            <strong>Nội dung:</strong>
+            Sau khi tạo đơn hàng vui lòng ghi mã đơn hàng.
+
+            <hr />
+
+            <img src="~/Content/images/TPB-113366668888-qr_only.png"
+                 width="250"
+                 class="img-thumbnail" />
+
+            <hr />
+
+            <label class="form-label">
+
+                Ảnh xác nhận chuyển khoản
+
+            </label>
+
+            <input type="file"
+                   name="AnhThanhToan"
+                   accept="image/*"
+                   class="form-control" />
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-success">
+
+            Xác nhận đặt hàng
+
+        </button>
+
+    </form>
+}
+
+@section scripts{
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const cod =
+                document.getElementById("cod");
+
+            const ck =
+                document.getElementById("ck");
+
+            const box =
+                document.getElementById("thongTinCK");
+
+            function updateBox() {
+
+                if (ck.checked) {
+
+                    box.style.display = "block";
+                }
+                else {
+
+                    box.style.display = "none";
+                }
+            }
+
+            cod.addEventListener(
+                "change",
+                updateBox);
+
+            ck.addEventListener(
+                "change",
+                updateBox);
+
+            updateBox();
+        });
+
+    </script>
+
+}

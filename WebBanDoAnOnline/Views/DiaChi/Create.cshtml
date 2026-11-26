@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Thêm địa chỉ";
+}
+
+<h2>Thêm địa chỉ giao hàng</h2>
+
+@using (Html.BeginForm())
+{
+    <div class="mb-3">
+        <label>Người nhận</label>
+        <input type="text"
+               name="TenNguoiNhan"
+               class="form-control"
+               required />
+    </div>
+
+    <div class="mb-3">
+        <label>Số điện thoại</label>
+        <input type="text"
+               name="SDTNhan"
+               class="form-control"
+               required />
+    </div>
+
+    <div class="mb-3">
+        <label>Địa chỉ cụ thể</label>
+        <textarea name="DiaChiCuThe"
+                  class="form-control"
+                  rows="4"
+                  required></textarea>
+    </div>
+
+    <button type="submit"
+            class="btn btn-success">
+        Lưu địa chỉ
+    </button>
+
+    <a href="@Url.Action("Index")"
+       class="btn btn-secondary">
+        Quay lại
+    </a>
+}
+

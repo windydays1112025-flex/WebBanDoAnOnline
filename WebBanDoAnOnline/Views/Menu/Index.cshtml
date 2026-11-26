@@ -1,0 +1,187 @@
+﻿@{
+    ViewBag.Title = "Thực đơn";
+    var danhMucList = (List<WebBanDoAnOnline.Models.DanhMuc>)ViewBag.DanhMucList;
+    var sanPhamList = (List<WebBanDoAnOnline.Models.SanPham>)ViewBag.SanPhamList;
+    bool daDangNhap = Session["TaiKhoan"] != null;
+    int? maDMHienTai = ViewBag.MaDMHienTai as int?;
+}
+
+<div class="menu-categories-container mb-4">
+    <h3 class="mb-3 fw-bold">Danh mục món ăn</h3>
+    <div class="d-flex justify-content-end mb-3">
+
+        <form method="get">
+
+            @if (maDMHienTai != null)
+            {
+                <input type="hidden"
+                       name="maDM"
+                       value="@maDMHienTai" />
+            }
+
+            <select name="sapXep"
+                    class="form-select"
+                    onchange="this.form.submit()">
+
+                <option value="">
+                    Sắp xếp món ăn
+                </option>
+
+                <option value="giaTang"
+                        @(ViewBag.SapXep == "giaTang" ? "selected" : "")>
+                    Giá thấp → cao
+                </option>
+
+                <option value="giaGiam"
+                        @(ViewBag.SapXep == "giaGiam" ? "selected" : "")>
+                    Giá cao → thấp
+                </option>
+
+                <option value="danhGia"
+                        @(ViewBag.SapXep == "danhGia" ? "selected" : "")>
+                    Đánh giá cao nhất
+                </option>
+
+            </select>
+
+        </form>
+
+    </div>
+    <div class="menu-categories">
+
+        <a href="@Url.Action("Index", "Menu")"
+           class="category-item-circle @(maDMHienTai == null ? "active" : "")">
+            <div class="category-image">
+                <i class="fa-solid fa-border-all fa-2x"></i>
+            </div>
+            <span class="category-name">Tất cả</span>
+        </a>
+
+        @foreach (var category in danhMucList)
+        {
+            var isActive = maDMHienTai == category.MaDM;
+
+            if (category.MacDinh == true)
+            {
+                <a href="@Url.Action("Index", "Menu", new { maDM = category.MaDM })"
+                   class="category-item-special @(isActive ? "active" : "")">
+                    <img src="@Url.Content(category.Anh)" alt="@category.TenDM">
+                    <span>@category.TenDM</span>
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("Index", "Menu", new { maDM = category.MaDM })"
+                   class="category-item-circle @(isActive ? "active" : "")">
+                    <div class="category-image">
+                        <img src="@Url.Content(category.Anh)" alt="@category.TenDM">
+                    </div>
+                    <span class="category-name">@category.TenDM</span>
+                </a>
+            }
+        }
+    </div>
+</div>
+
+<div class="product-grid">
+    <div class="row g-4">
+        @if (sanPhamList.Count == 0)
+        {
+            <div class="text-center py-5">
+                <i class="fa-solid fa-bowl-food fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Không có món ăn nào trong danh mục này.</p>
+            </div>
+        }
+        else
+        {
+            foreach (var product in sanPhamList)
+            {
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="menu-product-card">
+
+                        <img src="@Url.Content(product.Anh)"
+                             alt="@product.TenSP"
+                             class="product-card-img" />
+
+                        <div class="product-card-body">
+
+                            <h5 class="product-card-title">@product.TenSP</h5>
+
+                            <div class="product-card-meta">
+                                <span class="product-price">
+                                    <i class="fa-solid fa-tags"></i>
+                                    @product.Gia.Value.ToString("N0")đ
+                                </span>
+                                <span class="product-time">
+                                    <i class="fa-regular fa-clock"></i>
+                                    @product.ThoiGianGiao
+                                </span>
+                            </div>
+
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="@Url.Action("ChiTiet", "Menu", new { id = product.MaSP })"
+                                   class="btn btn-secondary flex-fill">
+                                    Chi tiết
+                                </a>
+
+                                @if (daDangNhap)
+                                {
+                                <a href="@Url.Action("ThemGioHang", "GioHang", new { id = product.MaSP })"
+                                   class="btn btn-primary flex-fill btn-dat-mon">
+                                    Đặt món
+                                </a>
+                                }
+                                else
+                                {
+                                <button type="button"
+                                        class="btn btn-primary flex-fill btn-chua-dangnhap"
+                                        data-url="@Url.Action("DangNhap", "TaiKhoan")?returnUrl=@Url.Action("Index", "Menu")">
+                                    Đặt món
+                                </button>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).on('click', '.btn-chua-dangnhap', function () {
+            var loginUrl = $(this).data('url');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Chưa đăng nhập',
+                text: 'Bạn cần đăng nhập để đặt món!',
+                showCancelButton: true,
+                confirmButtonColor: '#f97316',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fa-solid fa-right-to-bracket me-1"></i> Đăng nhập ngay',
+                cancelButtonText: 'Để sau'
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    window.location.href = loginUrl;
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-dat-mon', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            Swal.fire({
+                icon: 'success',
+                title: 'Đã thêm vào giỏ!',
+                text: 'Món ăn đã được thêm vào giỏ hàng.',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(function () {
+                window.location.href = url;
+            });
+        });
+    </script>
+}

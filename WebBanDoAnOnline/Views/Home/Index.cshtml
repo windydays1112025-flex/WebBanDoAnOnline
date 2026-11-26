@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "Trang chủ";
+}
+
+<!-- ============================ HERO SECTION ============================ -->
+<section class="hero-section">
+    <div class="row align-items-center">
+        <!-- Cột bên trái: Text và Form -->
+        <div class="col-lg-6">
+            <h1 class="hero-heading">
+                Dinh dưỡng tận nơi <br />
+                <span class="text-highlight">Thảnh thơi sống khỏe.</span>
+            </h1>
+            <p class="hero-subheading">
+                Tự tin là nhà hàng hàng đầu về chất lượng và độ tin cậy, với 36 năm kinh nghiệm trong nghề và hàng loạt đầu bếp chất lượng từ khắp mọi miền tổ quốc. Chúng tôi sáng tạo nên những bữa ăn hàng ngày vừa đậm đà hương vị, vừa cân bằng dinh dưỡng để bạn sống khỏe mạnh hơn.
+            </p>
+            <div class="address-form mt-4">
+                <a href="@Url.Action("Index","Menu")"
+                   class="btn-khampha">
+                    <i class="fa-solid fa-fire me-2"></i>
+                    Khám phá thực đơn ngay
+                </a>
+            </div>
+        </div>
+        <!-- Cột bên phải: Ảnh -->
+        <div class="col-lg-6 mt-4 mt-lg-0">
+            <img src="~/img/anhgioithieu.png" alt="Món phở bò thơm ngon" class="hero-image" />
+        </div>
+    </div>
+</section>
+
+<!-- ============================ FEATURED DISHES SECTION ============================ -->
+
+@{
+    var monNoiBat =
+        ViewBag.MonNoiBat as List<WebBanDoAnOnline.Models.SanPham>;
+}
+
+<section class="featured-section">
+
+    <h2 class="section-title">
+        Món ăn nổi bật
+    </h2>
+
+    <div class="row g-4">
+
+        @if (monNoiBat != null && monNoiBat.Count > 0)
+        {
+            foreach (var item in monNoiBat)
+            {
+                <div class="col-lg-3 col-md-4 col-6">
+
+                    <div class="product-card">
+
+                        <img src="@Url.Content(item.Anh)"
+                             alt="@item.TenSP"
+                             class="product-image">
+
+                        <div class="product-info">
+
+                            <h5 class="product-name">
+                                @item.TenSP
+                            </h5>
+
+                            <div class="product-meta">
+
+                                <span>
+                                    <i class="fas fa-tag"></i>
+
+                                    @(item.Gia.HasValue
+                                        ? item.Gia.Value.ToString("N0")
+                                        : "0")đ
+                                </span>
+
+                                <span>
+                                    <i class="fas fa-star text-warning"></i>
+
+                                    @(item.DiemDanhGia.HasValue
+                                        ? item.DiemDanhGia.Value.ToString("0.0")
+                                        : "0")
+                                </span>
+
+                            </div>
+
+                            <a href="@Url.Action(
+                                        "ChiTiet",
+                                        "Menu",
+                                        new { id = item.MaSP })"
+                               class="btn btn-details">
+
+                                Xem chi tiết
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+
+                <p>
+                    Chưa có món ăn nổi bật
+                </p>
+
+            </div>
+        }
+
+    </div>
+
+</section>

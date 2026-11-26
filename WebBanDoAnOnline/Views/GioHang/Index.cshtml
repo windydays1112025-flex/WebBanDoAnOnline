@@ -1,0 +1,100 @@
+﻿@model List<WebBanDoAnOnline.Models.GioHang>
+
+@{
+    ViewBag.Title = "Giỏ hàng";
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4">
+        <i class="fa-solid fa-cart-shopping me-2"></i> Giỏ hàng của bạn
+    </h3>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="text-center py-5">
+            <i class="fa-solid fa-cart-shopping fa-4x text-muted mb-3"></i>
+            <p class="text-muted fs-5">Giỏ hàng của bạn đang trống.</p>
+            @Html.ActionLink("Xem thực đơn", "Index", "Menu",
+                null, new { @class = "btn btn-warning mt-2" })
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Món ăn</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@Url.Content(item.SanPham.Anh)"
+                                         alt="@item.SanPham.TenSP"
+                                         style="width:60px;height:60px;object-fit:cover;border-radius:8px" />
+                                    <span class="fw-500">@item.SanPham.TenSP</span>
+                                </div>
+                            </td>
+                            <td>@item.SanPham.Gia.Value.ToString("N0")đ</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <a href="@Url.Action("GiamSoLuong", "GioHang", new { id = item.MaGio })"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </a>
+                                    <span class="px-2 fw-bold">@item.SoLuong</span>
+                                    <a href="@Url.Action("TangSoLuong", "GioHang", new { id = item.MaGio })"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="text-warning fw-bold">
+                                @((item.SanPham.Gia.Value * item.SoLuong.Value).ToString("N0"))đ
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Xoa", "GioHang", new { id = item.MaGio })"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Xóa món này khỏi giỏ hàng?')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold fs-5">Tổng cộng:</td>
+                        <td class="text-warning fw-bold fs-5">
+                            @(Model.Sum(x => x.SanPham.Gia.Value * x.SoLuong.Value).ToString("N0"))đ
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+            @Html.ActionLink("Tiếp tục mua", "Index", "Menu",
+                null, new { @class = "btn btn-secondary" })
+
+            @Html.ActionLink("Đặt hàng", "DatHang", "GioHang",
+                null, new { @class = "btn btn-warning px-4" })
+        </div>
+    }
+</div>
